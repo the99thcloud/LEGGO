@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EXID 台灣演唱會市場可行性分析報告</title>
+    <link rel="icon" type="image/png" href="https://i.meee.com.tw/btt5ieR.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap');
+        
+        html, body {
+            overflow-x: hidden; /* Prevents horizontal scrolling */
+            width: 100%;
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #000000;
+            color: #e5e5e5; /* neutral-200 */
+        }
+
+        .full-page-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5rem 1.5rem;
+            width: 100%; 
+            border-bottom: 1px solid #262626; /* neutral-800 */
+            box-sizing: border-box;
+        }
+        
+        /* Apply scroll-snap only on larger screens (desktops) */
+        @media (min-width: 1024px) {
+            html {
+                scroll-snap-type: y mandatory;
+            }
+            .full-page-section {
+                 scroll-snap-align: center;
+            }
+        }
+
+        .font-kr {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .font-montserrat {
+            font-family: 'Montserrat', sans-serif;
+        }
+        h1, h2, h3 {
+            font-weight: 900;
+        }
+        .nav-link {
+            transition: color 0.3s;
+        }
+       
+        .hero-bg {
+            background: radial-gradient(ellipse at center, rgba(23, 23, 23, 1) 0%, rgba(0,0,0,1) 75%);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30.5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background-color: #a3a3a3; /* neutral-400 */
+            border: 4px solid #171717; /* neutral-900 */
+        }
+        
+        /* Animation styles */
+        .animated-item {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .animated-item.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Scroller styles for Fan Wall */
+        .scroller {
+          max-width: 1200px;
+          width: 100%;
+        }
+
+        .scroller__inner {
+          padding-block: 1rem;
+          display: flex;
+          gap: 1.5rem; /* Increased gap */
+        }
+
+        .scroller[data-animated="true"] {
+          overflow: hidden;
+          -webkit-mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
+          mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
+        }
+
+        .scroller[data-animated="true"] .scroller__inner {
+          width: max-content;
+          flex-wrap: nowrap;
+          animation: scroll var(--_animation-duration, 40s) var(--_animation-direction, forwards) linear infinite;
+        }
+        
+        .scroller[data-direction="right"] {
+            --_animation-direction: reverse;
+        }
+        
+        .scroller:hover .scroller__inner {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll {
+          to {
+            transform: translate(calc(-50% - 0.75rem));
+          }
+        }
+
+        /* Print-specific styles */
+        @media print {
+            html {
+                scroll-snap-type: none;
+            }
+            body {
+                font-family: 'Noto Sans TC', sans-serif !important;
+                font-size: 10pt;
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            header, #print-btn, #lang-switch-btn { display: none !important; }
+            main { padding: 0 !important; margin: 0 !important; }
+            .full-page-section {
+                min-height: 98vh;
+                padding: 1.5cm !important;
+                box-sizing: border-box;
+                page-break-after: always;
+                border-bottom: none !important;
+            }
+            .full-page-section:last-of-type { page-break-after: auto; }
+            section, .bg-black, .bg-neutral-900, .hero-bg {
+                box-shadow: none !important;
+                border: none !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
+            h1, h2, h3, h4, p, strong, span, div, li, blockquote, a { color: #000000 !important; }
+            a { text-decoration: none; }
+            .timeline-item::before { display: none; }
+            .border-l-2 { border-left: none !important; }
+            .pl-8 { padding-left: 0 !important; }
+            img, canvas { max-width: 100% !important; height: auto !important; }
+            .text-neutral-400, .text-neutral-500, .text-neutral-300, .text-violet-400 { color: #000000 !important; }
+            .border-neutral-700, .border-neutral-600 { border-color: #cccccc !important; }
+            .invert { filter: invert(0) !important; }
+            .scroller { display: none; } /* Hide scrolling element in print */
+        }
+    </style>
+</head>
+<body class="bg-black">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-black/70 backdrop-blur-md shadow-lg shadow-neutral-900/50 print:hidden">
+        <div class="container mx-auto px-4">
+            <nav class="flex items-center justify-between h-16 text-neutral-200">
+                <div class="flex-shrink-0">
+                    <a href="#hero"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f8/EXID_LOGO_%283%29.png" alt="EXID Logo" class="h-7 invert"></a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#summary" class="nav-link text-sm font-semibold text-neutral-400 hover:text-white" data-lang-tw>引言</a>
+                    <a href="#summary" class="nav-link text-sm font-semibold text-neutral-400 hover:text-white hidden" data-lang-ko>서문</a>
+                    <a href="#history" class="nav-link text-sm font-semibold text-neutral-400 hover:text-white" data-lang-tw>歷史</a>
+                    <a href="#history" class="nav-link text-sm font-semibold text-neutral-400 hover:text-white hidden" data-lang-ko>기록</a>
+                    <a href="#data" class="nav-link text-sm font-semibold text-neutral-400 hover:text-white" data-lang-tw>數據</a>
+                    <a href="#data" class="nav-link text-sm font-semibold text-neutral-400 hover:text-white hidden" data-lang-ko>데이터</a>
+                    <a href="#conclusion" class="nav-link text-sm font-semibold text-neutral-400 hover:text-white" data-lang-tw>結論</a>
+                    <a href="#conclusion" class="nav-link text-sm font-semibold text-neutral-400 hover:text-white hidden" data-lang-ko>결론</a>
+                </div>
+                 <div class="flex items-center">
+                    <button id="print-btn" class="mr-3 p-2 text-neutral-400 hover:bg-neutral-800 hover:text-white rounded-full transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" /></svg>
+                    </button>
+                    <button id="lang-switch-btn" class="border border-neutral-700 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600 font-bold py-2 px-3 rounded-md transition-colors duration-300 text-sm">
+                        한국어
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        
+        <!-- Hero Section -->
+        <section id="hero" class="full-page-section hero-bg text-white text-center">
+            <div class="max-w-4xl mx-auto animated-item">
+                <h1 class="text-6xl md:text-8xl font-black font-montserrat tracking-wider mb-4">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f8/EXID_LOGO_%283%29.png" alt="EXID Logo" class="h-16 md:h-24 inline-block invert">
+                </h1>
+                <p class="text-2xl md:text-3xl font-bold text-neutral-300" data-lang-tw>台灣演唱會 市場可行性分析報告</p>
+                <p class="text-2xl md:text-3xl font-bold text-neutral-300 hidden" data-lang-ko>대만 콘서트 시장 타당성 분석 보고서</p>
+            </div>
+        </section>
+
+        <!-- Introduction -->
+        <section id="summary" class="full-page-section bg-black text-white">
+             <div class="text-center max-w-4xl animated-item">
+                <h2 class="text-4xl md:text-5xl font-black mb-8" data-lang-tw>引言</h2>
+                <h2 class="text-4xl md:text-5xl font-black mb-8 hidden" data-lang-ko>서문</h2>
+                <blockquote class="border-l-4 border-neutral-600 pl-8 text-left">
+                    <p class="text-lg md:text-xl leading-relaxed text-neutral-200" data-lang-tw>
+                        我是一個喜歡 EXID 多年的 LEGGO。<br>
+                        最近看到她們陸續在越南、澳門舉辦 FANCON，除了為她們開心，心裡也更深刻地期盼能再次在台灣見到她們。<br><br>
+                        想著與其等待，不如我們主動做點努力。<br>
+                        因此，我們發起了這份「EXID 2025-2026 台灣演唱會市場意願調查」。不論你是資深 LEGGO，或是喜歡〈Up & Down〉、〈Ah Yeah〉、〈Every Night〉...等歌曲的朋友，我們都希望能集結大家的力量，將我們的意願數據化，提供給相關單位進行評估。<br><br>
+                        期望能透過這份更精確的數據，爭取 EXID 來台的機會。
+                    </p>
+                     <p class="text-lg md:text-xl leading-relaxed text-neutral-200 hidden" data-lang-ko>
+                        저는 오랫동안 EXID를 좋아해 온 레고(LEGGO)입니다.<br>
+                        최근 베트남과 마카오에서 팬콘을 개최하는 모습을 보며 그들을 위해 기뻐하는 한편, 대만에서 다시 만날 수 있기를 더욱 간절히 바라게 되었습니다.<br><br>
+                        기다리기보다는 우리가 먼저 노력해보기로 했습니다.<br>
+                        그래서 저희는 'EXID 2025-2026 대만 콘서트 시장 의향 조사'를 시작했습니다. 오랜 팬이든, '위아래', '아예', '매일밤' 등의 노래를 좋아하는 분이든, 모두의 힘을 모아 우리의 의향을 데이터로 만들어 관련 기관에 평가 자료로 제공하고자 합니다.<br><br>
+                        이 정확한 데이터를 통해 EXID가 대만에 올 기회를 얻을 수 있기를 바랍니다.
+                    </p>
+                </blockquote>
+             </div>
+        </section>
+
+        <!-- Historical Success -->
+        <section id="history" class="full-page-section bg-neutral-900">
+            <div class="text-center max-w-4xl animated-item">
+                <h2 class="text-4xl md:text-5xl font-black text-white mb-12" data-lang-tw>我們的共同記憶</h2>
+                <h2 class="text-4xl md:text-5xl font-black text-white mb-12 hidden" data-lang-ko>우리의 공동 기억</h2>
+                <div class="relative max-w-3xl mx-auto border-l-2 border-neutral-700 pl-8 text-left">
+                     <!-- 2015 -->
+                    <div class="timeline-item mb-12 relative animated-item">
+                        <p class="text-sm text-violet-400 font-bold">2015.07.18</p>
+                        <h3 class="text-xl font-bold text-white">2015 EXID 1st SHOWCASE in TAIWAN</h3>
+                        <p class="mt-2 text-neutral-400 text-sm" data-lang-tw>這是 EXID 出道後的首場海外 Showcase，選擇在台灣舉辦，足見對台灣市場的重視。當天除了表演多首熱門歌曲，更在會後舉行了 High Touch 擊掌福利，讓所有購票粉絲都能與成員近距離接觸。</p>
+                        <p class="mt-2 text-neutral-400 text-sm hidden" data-lang-ko>EXID의 데뷔 후 첫 해외 쇼케이스로 대만을 선택한 것은 대만 시장에 대한 중요성을 보여줍니다. 당일 히트곡 다수 공연 외에도, 공연 후 하이터치 이벤트를 통해 모든 티켓 구매 팬들이 멤버들과 가까이서 만날 수 있는 기회를 가졌습니다.</p>
+                    </div>
+                     <!-- 2016 -->
+                    <div class="timeline-item mb-12 relative animated-item">
+                        <p class="text-sm text-violet-400 font-bold">2016.09.25</p>
+                        <h3 class="text-xl font-bold text-white">EXID 2016 LEGGO WORLD IN TAIWAN</h3>
+                        <p class="mt-2 text-neutral-400 text-sm" data-lang-tw>在台北國際會議中心(TICC)舉辦的官方粉絲見面會，為 LEGGO 們帶來更深入的互動體驗。除了經典歌曲的演出，活動中更安排了許多遊戲環節，讓粉絲有機會上台與 EXID 成員們同樂。</p>
+                        <p class="mt-2 text-neutral-400 text-sm hidden" data-lang-ko>타이베이 국제 컨벤션 센터(TICC)에서 열린 공식 팬미팅으로, 레고들에게 더 깊이 있는 소통의 경험을 선사했습니다. 대표곡 공연 외에도 다양한 게임 코너를 마련하여 팬들이 무대에 올라 EXID 멤버들과 함께 즐길 수 있는 기회를 가졌습니다.</p>
+                    </div>
+                    <!-- 2017 March -->
+                    <div class="timeline-item mb-12 relative animated-item">
+                        <p class="text-sm text-violet-400 font-bold">2017.03.28</p>
+                        <h3 class="text-xl font-bold text-white" data-lang-tw>Hani 個人代言記者會</h3>
+                        <h3 class="text-xl font-bold text-white hidden" data-lang-ko>하니 단독 광고 모델 기자회견</h3>
+                        <p class="mt-2 text-neutral-400 text-sm" data-lang-tw>成員 Hani 單獨來台，以代言人身份出席記者會。她在活動中大秀中文，並分享拍攝廣告的趣事，展現了親切可愛的一面，證明了成員的獨立市場價值。</p>
+                        <p class="mt-2 text-neutral-400 text-sm hidden" data-lang-ko>멤버 하니가 단독으로 대만을 방문하여 광고 모델로서 기자회견에 참석했습니다. 행사에서 유창한 중국어를 선보이고 광고 촬영 비하인드 스토리를 공유하며 친근하고 사랑스러운 매력을 발산하여, 멤버 개인의 시장 가치를 증명했습니다.</p>
+                    </div>
+                     <!-- 2017 May -->
+                    <div class="timeline-item mb-12 relative animated-item">
+                        <p class="text-sm text-violet-400 font-bold">2017.05.27</p>
+                        <h3 class="text-xl font-bold text-white" data-lang-tw>頒獎典禮表演嘉賓</h3>
+                        <h3 class="text-xl font-bold text-white hidden" data-lang-ko>시상식 축하 공연 게스트</h3>
+                        <p class="mt-2 text-neutral-400 text-sm" data-lang-tw>受邀擔任「17直播金羽獎頒獎典禮」表演嘉賓及頒獎人，帶來了精彩的舞台演出，展現其在台灣市場的影響力與知名度。</p>
+                        <p class="mt-2 text-neutral-400 text-sm hidden" data-lang-ko>'17 Media Golden Feather Awards' 시상식의 축하 공연 게스트 및 시상자로 초청되어 화려한 무대를 선보이며 대만 시장에서의 영향력과 인지도를 과시했습니다.</p>
+                    </div>
+                    <!-- 2017 August -->
+                    <div class="timeline-item relative animated-item">
+                        <p class="text-sm text-violet-400 font-bold">2017.08.26</p>
+                        <h3 class="text-xl font-bold text-white">2017 EXID Asia Tour in Taiwan</h3>
+                        <p class="mt-2 text-neutral-400 text-sm" data-lang-tw>首次在台的正式演唱會。原定於7月30日在台大體育館舉行，但因颱風影響而延期並更換場地。儘管一波三折，粉絲的熱情絲毫不減，當時隊長率智因病缺席，仍由其餘四位成員在新北市工商展覽中心帶來座無虛席的精彩演出。</p>
+                        <p class="mt-2 text-neutral-400 text-sm hidden" data-lang-ko>대만에서의 첫 공식 콘서트. 원래 7월 30일 국립대만대학교 체육관에서 열릴 예정이었으나 태풍으로 인해 연기 및 장소 변경이라는 우여곡절이 있었습니다. 그럼에도 팬들의 열기는 식지 않았고, 당시 리더 솔지가 건강 문제로 불참했음에도 불구하고 네 명의 멤버가 신베이시 공상전람센터에서 전석 매진의 멋진 공연을 선사했습니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Anchor for Data Sections -->
+        <div id="data"></div>
+
+        <!-- Data Section 1: Intention -->
+        <section class="full-page-section bg-black">
+            <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center animated-item">
+                <div class="text-left">
+                    <p class="text-violet-400 font-bold" data-lang-tw>市場洞察 01</p>
+                    <p class="text-violet-400 font-bold hidden" data-lang-ko>시장 분석 01</p>
+                    <h2 class="text-4xl md:text-6xl font-black text-white mt-2 mb-6" data-lang-tw>壓倒性的參與意願</h2>
+                    <h2 class="text-4xl md:text-6xl font-black text-white mt-2 mb-6 hidden" data-lang-ko>압도적인 참여 의향</h2>
+                    <h3 class="font-bold text-xl mb-4 text-neutral-200" data-lang-tw>這份期待，無需等待</h3>
+                    <h3 class="font-bold text-xl mb-4 text-neutral-200 hidden" data-lang-ko>기다릴 필요 없는 기대감</h3>
+                    <p class="text-neutral-300" data-lang-tw>數據揭示了一個驚人的事實：高達 92% 的粉絲表達了「高度參與意願」。這不是一個需要從零培養、等待發酵的市場，而是一個能量積蓄已久、只需一個火花就能引爆的「即時變現」市場。這意味著票房基本盤極其穩固，宣傳成本效益極高，任何額外的路人粉絲都將是錦上添花。</p>
+                    <p class="text-neutral-300 hidden" data-lang-ko>데이터는 놀라운 사실을 보여줍니다: 92%에 달하는 팬들이 '높은 참여 의향'을 보였습니다. 이는 처음부터 육성하고 발효를 기다려야 하는 시장이 아니라, 오랫동안 에너지를 축적해왔으며 불꽃 하나만으로 폭발할 수 있는 '즉시 수익화' 가능한 시장이라는 것을 의미합니다. 이는 티켓 판매의 기본 수요가 매우 견고하고, 홍보 비용 효율이 높으며, 추가적인 일반 팬 유입은 금상첨화가 될 것임을 시사합니다.</p>
+                </div>
+                <div class="w-full h-80 md:h-96"><canvas id="intentionChart"></canvas></div>
+            </div>
+        </section>
+        
+        <!-- Data Section 2: Price -->
+        <section class="full-page-section bg-neutral-900">
+             <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center animated-item">
+                 <div class="w-full h-80 md:h-96 lg:order-last"><canvas id="priceChart"></canvas></div>
+                <div class="text-left">
+                    <p class="text-violet-400 font-bold" data-lang-tw>市場洞察 02</p>
+                    <p class="text-violet-400 font-bold hidden" data-lang-ko>시장 분석 02</p>
+                    <h2 class="text-4xl md:text-6xl font-black text-white mt-2 mb-6" data-lang-tw>強勁的消費能力</h2>
+                    <h2 class="text-4xl md:text-6xl font-black text-white mt-2 mb-6 hidden" data-lang-ko>강력한 소비 능력</h2>
+                    <h3 class="font-bold text-xl mb-4 text-neutral-200" data-lang-tw>價值，是對等待的最好回答</h3>
+                     <h3 class="font-bold text-xl mb-4 text-neutral-200 hidden" data-lang-ko>가치, 기다림에 대한 최고의 대답</h3>
+                    <p class="text-neutral-300" data-lang-tw>超過 65% 的粉絲願意接受 NT$4,200 以上的票價，這不僅反映了粉絲群的經濟實力，更是對 EXID 七年等待的高度價值認可。這組數據為營收策略提供了明確方向：設立 NT$5,800 以上的 VIP 票區不僅可行，更是粉絲所期待的。將高吸引力的福利與之綑綁，將能有效驅動消費升級，創造遠超預期的營收潛力。</p>
+                    <p class="text-neutral-300 hidden" data-lang-ko>65% 이상의 팬들이 NT$4,200 이상의 티켓 가격을 수용할 의사가 있다는 것은 팬덤의 경제력을 반영할 뿐만 아니라, EXID를 향한 7년간의 기다림에 대한 높은 가치 인식을 보여줍니다. 이 데이터는 수익 전략에 명확한 방향을 제시합니다: NT$5,800 이상의 VIP 구역 설정은 가능할 뿐만 아니라 팬들이 기대하는 바이기도 합니다. 매력적인 혜택과 연계함으로써 소비 업그레이드를 효과적으로 유도하고, 예상을 뛰어넘는 수익 잠재력을 창출할 수 있습니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Section 3: Fandom Duration -->
+        <section class="full-page-section bg-black">
+            <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center animated-item">
+                <div class="text-left">
+                    <p class="text-violet-400 font-bold" data-lang-tw>市場洞察 03</p>
+                    <p class="text-violet-400 font-bold hidden" data-lang-ko>시장 분석 03</p>
+                    <h2 class="text-4xl md:text-6xl font-black text-white mt-2 mb-6" data-lang-tw>極高的粉絲忠誠度</h2>
+                    <h2 class="text-4xl md:text-6xl font-black text-white mt-2 mb-6 hidden" data-lang-ko>매우 높은 팬 충성도</h2>
+                    <h3 class="font-bold text-xl mb-4 text-neutral-200" data-lang-tw>時間淬鍊的鑽石級鐵粉</h3>
+                    <h3 class="font-bold text-xl mb-4 text-neutral-200 hidden" data-lang-ko>시간이 빚어낸 다이아몬드급 팬덤</h3>
+                    <p class="text-neutral-300" data-lang-tw>高達 81% 為追隨超過四年的資深粉絲，其中更有 58% 是超過七年的「鑽石級鐵粉」。這不是短暫的潮流，而是一個經過逆行奇蹟與漫長等待所淬鍊、情感連結極深的成熟社群。他們不僅是票房的基石，更是最佳的「品牌大使」，會自發地維護藝人聲譽並推廣活動，形成正向的口碑循環，同時也是周邊商品最穩定的消費主力。</p>
+                    <p class="text-neutral-300 hidden" data-lang-ko>81%가 4년 이상 팬 활동을 한 베테랑 팬이며, 그 중 58%는 7년 이상의 '다이아몬드급 핵심 팬'입니다. 이는 일시적인 유행이 아니라 역주행의 기적과 오랜 기다림을 통해 단련된, 감정적 유대가 매우 깊은 성숙한 커뮤니티입니다. 이들은 티켓 판매의 기반일 뿐만 아니라, 자발적으로 아티스트의 명성을 지키고 이벤트를 홍보하며 긍정적인 입소문 순환을 만드는 최고의 '브랜드 앰배서더'이자, 굿즈의 가장 안정적인 소비 주체입니다.</p>
+                </div>
+                <div class="w-full h-80 md:h-96"><canvas id="fandomDurationChart"></canvas></div>
+            </div>
+        </section>
+
+        <!-- Data Section 4: Benefits -->
+        <section class="full-page-section bg-neutral-900">
+             <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center animated-item">
+                 <div class="w-full h-80 md:h-96 lg:order-last"><canvas id="benefitsChart"></canvas></div>
+                <div class="text-left">
+                    <p class="text-violet-400 font-bold" data-lang-tw>市場洞察 04</p>
+                    <p class="text-violet-400 font-bold hidden" data-lang-ko>시장 분석 04</p>
+                    <h2 class="text-4xl md:text-6xl font-black text-white mt-2 mb-6" data-lang-tw>互動體驗價值最高</h2>
+                    <h2 class="text-4xl md:text-6xl font-black text-white mt-2 mb-6 hidden" data-lang-ko>상호작용 경험의 가치</h2>
+                    <h3 class="font-bold text-xl mb-4 text-neutral-200" data-lang-tw>渴望的，是真實的連結</h3>
+                    <h3 class="font-bold text-xl mb-4 text-neutral-200 hidden" data-lang-ko>갈망하는 것은, 진정한 연결</h3>
+                    <p class="text-neutral-300" data-lang-tw>粉絲對「擊掌(85%)」和「團體合照(78%)」的渴望，明確揭示了「稀缺的互動體驗」是粉絲最願意付費的項目。這為票價策略提供了清晰指引：將最高價票區的核心價值，直接錨定在「與偶像的近距離互動」上。相較於製作實體周邊，高品質的互動福利執行成本相對更易控制，卻能創造最高的粉絲滿意度與利潤空間。</p>
+                    <p class="text-neutral-300 hidden" data-lang-ko>팬들이 '하이터치(85%)'와 '단체 사진(78%)'에 대한 갈망이 크다는 점은 '희소성 있는 상호작용 경험'이 팬들이 가장 기꺼이 비용을 지불하는 항목임을 명확히 보여줍니다. 이는 티켓 가격 전략에 대한 명확한 지침을 제공합니다: 최고가 티켓의 핵심 가치를 '아이돌과의 가까운 거리에서의 상호작용'에 두어야 합니다. 실물 굿즈 제작에 비해, 고품질의 상호작용 혜택은 실행 비용을 상대적으로 제어하기 쉬우면서도 최고의 팬 만족도와 수익 마진을 창출할 수 있습니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Section 5: Age & Region -->
+        <section class="full-page-section bg-black">
+            <div class="container mx-auto px-4 animated-item">
+                <div class="text-center max-w-4xl mx-auto">
+                    <p class="text-violet-400 font-bold" data-lang-tw>市場洞察 05</p>
+                    <p class="text-violet-400 font-bold hidden" data-lang-ko>시장 분석 05</p>
+                    <h2 class="text-4xl md:text-6xl font-black text-white mt-2 mb-6" data-lang-tw>黃金消費客群輪廓</h2>
+                    <h2 class="text-4xl md:text-6xl font-black text-white mt-2 mb-6 hidden" data-lang-ko>황금 소비 고객 프로필</h2>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 my-8">
+                     <div class="w-full h-80"><canvas id="ageChart"></canvas></div>
+                     <div class="w-full h-80"><canvas id="regionChart"></canvas></div>
+                </div>
+                 <div class="text-center max-w-4xl mx-auto">
+                    <h3 class="font-bold text-xl mb-4 text-neutral-200" data-lang-tw>精準的市場目標</h3>
+                    <h3 class="font-bold text-xl mb-4 text-neutral-200 hidden" data-lang-ko>정확한 시장 목표</h3>
+                    <p class="text-neutral-300" data-lang-tw>粉絲主力為 <strong class="text-white">25-34 歲 (佔 69%)</strong>、且集中在<strong class="text-white">北部地區 (佔 67%)</strong>。這堪稱是「行銷人的夢想藍圖」。這群有穩定經濟基礎的上班族，集中在交通最便利的地區，代表著行銷資源可以高度集中，用最有效率的方式觸及核心客群。這也為場地選擇與活動時間安排（週末為佳）提供了明確、無懸念的決策依據。</p>
+                    <p class="text-neutral-300 hidden" data-lang-ko>팬층의 주력은 <strong class="text-white">25-34세(69%)</strong>이며, <strong class="text-white">북부 지역(67%)</strong>에 집중되어 있습니다. 이는 '마케터의 꿈의 청사진'이라 할 수 있습니다. 안정적인 경제 기반을 갖춘 이 직장인 그룹이 교통이 가장 편리한 지역에 집중되어 있다는 것은, 마케팅 자원을 고도로 집중하여 가장 효율적인 방식으로 핵심 고객층에 도달할 수 있음을 의미합니다. 이는 또한 공연 장소 선택과 행사 시간(주말 선호)安排에 대한 명확하고 확실한 의사결정 근거를 제공합니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Section 6: Fan Voices -->
+        <section class="full-page-section bg-neutral-900">
+             <div class="container mx-auto px-4 text-center w-full animated-item">
+                <div class="max-w-4xl mx-auto">
+                    <p class="text-violet-400 font-bold" data-lang-tw>市場洞察 06</p>
+                    <p class="text-violet-400 font-bold hidden" data-lang-ko>시장 분석 06</p>
+                    <h2 class="text-4xl md:text-6xl font-black text-white mt-2 mb-6" data-lang-tw>粉絲心聲牆</h2>
+                    <h2 class="text-4xl md:text-6xl font-black text-white mt-2 mb-6 hidden" data-lang-ko>팬들의 목소리</h2>
+                    <h3 class="font-bold text-xl mb-12 text-neutral-300" data-lang-tw>無可取代的忠誠度證明</h3>
+                    <h3 class="font-bold text-xl mb-12 text-neutral-300 hidden" data-lang-ko>대체 불가능한 충성도의 증거</h3>
+                </div>
+                
+                <div class="flex flex-col gap-4">
+                    <div id="scroller1" class="scroller" style="--_animation-duration: 60s;">
+                        <ul class="scroller__inner">
+                            <!-- Content will be populated by JS -->
+                        </ul>
+                    </div>
+                    <div id="scroller2" class="scroller" data-direction="right" style="--_animation-duration: 90s;">
+                        <ul class="scroller__inner">
+                             <!-- Content will be populated by JS -->
+                        </ul>
+                    </div>
+                    <div id="scroller3" class="scroller" style="--_animation-duration: 70s;">
+                         <ul class="scroller__inner">
+                             <!-- Content will be populated by JS -->
+                        </ul>
+                    </div>
+                </div>
+             </div>
+        </section>
+
+        <!-- Conclusion -->
+        <section id="conclusion" class="full-page-section bg-black text-white">
+            <div class="text-center max-w-4xl animated-item">
+                 <img src="https://upload.wikimedia.org/wikipedia/commons/f/f8/EXID_LOGO_%283%29.png" alt="EXID Logo" class="w-24 mx-auto mb-6 invert opacity-70">
+                <h2 class="text-4xl md:text-5xl font-black mb-8" data-lang-tw>結論與最終建議</h2>
+                <h2 class="text-4xl md:text-5xl font-black mb-8 hidden" data-lang-ko>결론 및 최종 제안</h2>
+                <p class="text-lg leading-relaxed text-neutral-300" data-lang-tw>
+                    綜合歷史成功經驗與最新市場數據，所有指標均明確顯示：<strong class="text-white">此刻正是 EXID 重返台灣市場的黃金時機。</strong>
+                    這是一個無需教育、無需等待、無需承擔巨大風險的市場。粉絲的熱情與消費力已準備就緒，等待的只是一個值得信賴的主辦方將其點燃。
+                    <br><br>
+                    <strong class="text-white text-xl">最終建議：</strong> 立即啟動專案，鎖定<strong class="text-violet-400">台北國際會議中心 (TICC)</strong>。這不僅是交通便利、音場與視野俱佳的專業場地，更是 EXID <strong class="text-white">已有成功經驗的福地</strong>。回顧 2016 年的粉絲見面會，當時不僅票房開出紅盤，<strong class="text-white">高價位的 VIP 票券更是瞬間秒殺</strong>，證明了粉絲對此場地的高度認可。選擇 TICC 不僅是最佳選擇，更是<strong class="text-white">複製成功經驗的保證</strong>。售票策略建議採「<strong class="text-violet-400">階段性開賣</strong>」模式：優先開啟視野絕佳、粉絲黏著度最高的二樓約 1,500 席座位。若能迅速完售，不僅能提前確保損益平衡、將風險降至最低，更能創造「秒殺」的媒體話題，為後續三、四樓座位的銷售奠定強心針。同時，建議對<strong class="text-violet-400">最高票價區域採「實名制」</strong>，有效抵制黃牛，保障核心粉絲權益。我們預期這不僅會是一場快速完售的演出，更將成為 2025 年 K-POP 市場最具話題性的成功案例之一。
+                </p>
+                 <p class="text-lg leading-relaxed text-neutral-300 hidden" data-lang-ko>
+                    과거의 성공 경험과 최신 시장 데이터를 종합해 볼 때, 모든 지표는 명확하게 보여줍니다: <strong class="text-white">지금이 바로 EXID가 대만 시장에 복귀할 황금기입니다.</strong>
+                    이 시장은 교육이 필요 없고, 기다릴 필요도 없으며, 큰 리스크를 감수할 필요도 없습니다. 팬들의 열정과 소비력은 이미 준비되었으며, 신뢰할 수 있는 주최사가 불을 지펴주기만을 기다리고 있습니다.
+                    <br><br>
+                    <strong class="text-white text-xl">최종 제안:</strong> 즉시 프로젝트를 시작하고, <strong class="text-violet-400">타이베이 국제 컨벤션 센터(TICC)</strong>를 목표로 설정하십시오. 이곳은 교통이 편리하고 음향과 시야가 뛰어난 전문 공연장일 뿐만 아니라, EXID가 <strong class="text-white">이미 성공적인 경험을 쌓은 행운의 장소</strong>입니다. 2016년 팬미팅을 돌이켜보면, 당시 티켓 판매가 호조를 보였을 뿐만 아니라 <strong class="text-white">고가의 VIP 티켓은 순식간에 매진</strong>되어 팬들이 이 장소에 대해 높은 인정을 하고 있음을 증명했습니다. TICC를 선택하는 것은 최상의 선택일 뿐만 아니라 <strong class="text-white">성공 경험을 재현하는 보증수표</strong>입니다. 티켓 판매 전략으로는 '<strong class="text-violet-400">단계적 오픈</strong>' 모델을 제안합니다: 시야가 뛰어나고 팬 충성도가 가장 높은 2층 약 1,500석을 우선적으로 오픈합니다. 이 좌석이 신속하게 매진된다면, 손익분기점을 조기에 확보하고 리스크를 최소화할 수 있을 뿐만 아니라, '초고속 매진'이라는 미디어 화제성을 창출하여 이후 3, 4층 좌석 판매에 대한 강력한 동기 부여가 될 것입니다. 동시에, <strong class="text-violet-400">최고가 구역은 '실명제'를 도입</strong>하여 암표를 효과적으로 방지하고 핵심 팬들의 권익을 보호할 것을 제안합니다. 이 공연은 신속하게 매진될 뿐만 아니라, 2025년 K-POP 시장에서 가장 화제가 되는 성공 사례 중 하나가 될 것으로 예상됩니다.
+                </p>
+            </div>
+        </section>
+
+    </main>
+    
+    <script>
+        let currentLang = 'tw';
+        const chartInstances = {};
+
+        // Updated Raw data from the new survey
+        const surveyData = {
+            intention: { '5 (絕對會去)': 73, '4': 19, '3': 6, '2': 2, '1 (絕對不會去)': 0 },
+            price: { 'NT$ 5,801 以上': 22, 'NT$ 4,201 ~ NT$ 5,800': 43, 'NT$ 2,801 ~ NT$ 4,200': 30, 'NT$ 2,800 以下': 5 },
+            fandomDuration: { '7 年以上': 58, '4 - 6 年': 23, '1 - 3 年': 15, '1 年以下': 4 },
+            benefits: { 'Hi-Touch': 85, 'Group Photo': 78, 'Soundcheck': 68, 'Signed Polaroid': 63, 'Send-Off': 45, 'Poster/Card': 35 },
+            age: { '18-24': 22, '25-29': 41, '30-34': 28, '35+': 9 },
+            region: { '北部': 67, '中部': 18, '南部': 12, '東部/離島': 3 }
+        };
+
+        const translations = {
+            pageTitle: {
+                tw: 'EXID 台灣演唱會市場可行性分析報告',
+                ko: 'EXID 대만 콘서트 시장 타당성 분석 보고서'
+            },
+            tw: {
+                intention: { '5 (絕對會去)': '5 (絕對會去)', '4': '4 (意願極高)', '3': '3 (普通)', '2': '2 (意願偏低)', '1 (絕對不會去)': '1 (絕對不會去)' },
+                price: { 'NT$ 5,801 以上': 'NT$ 5,801 以上', 'NT$ 4,201 ~ NT$ 5,800': 'NT$ 4,201 ~ NT$ 5,800', 'NT$ 2,801 ~ NT$ 4,200': 'NT$ 2,801 ~ NT$ 4,200', 'NT$ 2,800 以下': 'NT$ 2,800 以下' },
+                fandomDuration: { '7 年以上': '7 年以上', '4 - 6 年': '4 - 6 年', '1 - 3 年': '1 - 3 年', '1 年以下': '1 年以下' },
+                benefits: { 'Hi-Touch': '擊掌', 'Group Photo': '團體合照', 'Soundcheck': '觀看彩排', 'Signed Polaroid': '簽名拍立得', 'Send-Off': '歡送', 'Poster/Card': '海報/小卡' },
+                age: { '18-24': '18-24 歲', '25-29': '25-29 歲', '30-34': '30-34 歲', '35+': '35 歲以上' },
+                region: { '北部': '北部', '中部': '中部', '南部': '南部', '東部/離島': '東部/離島' }
+            },
+            ko: {
+                intention: { '5 (絕對會去)': '5 (반드시 간다)', '4': '4 (매우 가고 싶다)', '3': '3 (보통)', '2': '2 (별로 안 가고 싶다)', '1 (絕對不會去)': '1 (절대 안 간다)' },
+                price: { 'NT$ 5,801 以上': 'NT$ 5,801 이상', 'NT$ 4,201 ~ NT$ 5,800': 'NT$ 4,201 ~ NT$ 5,800', 'NT$ 2,801 ~ NT$ 4,200': 'NT$ 2,801 ~ NT$ 4,200', 'NT$ 2,800 以下': 'NT$ 2,800 이하' },
+                fandomDuration: { '7 年以上': '7년 이상', '4 - 6 年': '4 - 6년', '1 - 3 年': '1 - 3년', '1 年以下': '1년 미만' },
+                benefits: { 'Hi-Touch': '하이터치', 'Group Photo': '단체 사진', 'Soundcheck': '사운드체크 관람', 'Signed Polaroid': '사인 폴라로이드', 'Send-Off': '환송', 'Poster/Card': '포스터/포토카드' },
+                age: { '18-24': '18-24세', '25-29': '25-29세', '30-34': '30-34세', '35+': '35세 이상' },
+                region: { '北部': '북부', '中部': '중부', '南部': '남부', '東部/離島': '동부/섬' }
+            }
+        };
+        const fanComments = [
+            { tw: "堅定不移的承諾", ko: "확고한 약속", tw_quote: "拜託一定要辦成！不管怎樣都會去！", ko_quote: "제발 꼭 성사시켜 주세요! 어떻게든 갈 거예요!" },
+            { tw: "超越時間的思念", ko: "시간을 초월한 그리움", tw_quote: "從一代團追到現在，孩子都生了，就等EXID合體來台灣！這是我的青春！", ko_quote: "1세대 아이돌부터 지금까지 좋아했는데, 이제 아이도 낳았어요. EXID 완전체가 대만에 오기만을 기다리고 있습니다! 이게 제 청춘이에요!" },
+            { tw: "潛在的廣大客群", ko: "광범위한 잠재 고객", tw_quote: "雖然可能稱不上粉絲，但喜歡的歌還是蠻多首的，有機會的話希望可以進場。", ko_quote: "팬이라고 하긴 좀 그렇지만, 좋아하는 노래는 꽤 많아요. 기회가 된다면 꼭 가고 싶어요." },
+            { tw: "對演出本身的渴望", ko: "공연 자체에 대한 갈망", tw_quote: "以上福利對我影響不大，我只希望能看到演出。", ko_quote: "위의 혜택들은 저에게 큰 영향을 주지 않아요, 저는 그저 공연을 보고 싶을 뿐입니다." },
+            { tw: "強大的消費潛力", ko: "강력한 소비 잠재력", tw_quote: "只要福利夠好，更高的票價都願意考慮。", ko_quote: "혜택만 좋다면 더 비싼 티켓도 고려할 의향이 있습니다." },
+            { tw: "無懼距離的熱情", ko: "거리를 두려워하지 않는 열정", tw_quote: "只要能來，不管在哪裡都衝！", ko_quote: "오기만 한다면, 어디든 달려갈 거예요." },
+            { tw: "青春無價", ko: "청춘은 값을 매길 수 없다", tw_quote: "錢不是問題，青春才是。", ko_quote: "돈이 문제가 아니라, 청춘이 문제죠." },
+            { tw: "最純粹的願望", ko: "가장 순수한 소원", tw_quote: "真的好想好想再看到合體，拜託了。", ko_quote: "정말 정말 다시 완전체를 보고 싶어요, 제발요." },
+            { tw: "期待已久", ko: "오래된 기다림", tw_quote: "七年了，等的花兒都謝了，快來吧！", ko_quote: "7년이나 지났어요, 기다리다 꽃도 다 졌어요. 빨리 와주세요!" },
+            { tw: "具體場地建議", ko: "구체적인 장소 제안", tw_quote: "TICC 的音響很棒，拜託選這邊！", ko_quote: "TICC 음향이 훌륭해요, 제발 여기로 선택해주세요!" },
+            { tw: "粉絲都準備好了", ko: "팬들은 준비 완료", tw_quote: "全體LEGGO都準備好了，主辦方勇敢衝吧！", ko_quote: "모든 레고가 준비됐어요, 주최측은 용감하게 나아가세요!" },
+            { tw: "抵制黃牛的期盼", ko: "암표상 반대에 대한 기대", tw_quote: "希望能有實名制，杜絕黃牛，讓我們這些真粉絲能進場。", ko_quote: "실명제를 도입해서 암표상을 막고, 우리 같은 진짜 팬들이 입장할 수 있기를 바랍니다." }
+        ];
+
+
+        const createChart = (ctx, type, dataKey, options) => {
+            if (chartInstances[dataKey]) {
+                chartInstances[dataKey].destroy();
+            }
+            
+            const originalLabels = Object.keys(surveyData[dataKey]);
+            const translatedLabels = originalLabels.map(label => translations[currentLang][dataKey][label] || label);
+
+            const chartData = {
+                labels: translatedLabels,
+                datasets: [{
+                    label: dataKey,
+                    data: Object.values(surveyData[dataKey]),
+                    backgroundColor: [
+                        'rgba(168, 85, 247, 0.8)',
+                        'rgba(129, 140, 248, 0.8)',
+                        'rgba(96, 165, 250, 0.8)',
+                        'rgba(52, 211, 153, 0.8)',
+                        'rgba(244, 114, 182, 0.8)',
+                        'rgba(251, 191, 36, 0.8)'
+                    ],
+                    borderColor: [
+                        '#a855f7',
+                        '#818cf8',
+                        '#60a5fa',
+                        '#34d399',
+                        '#f472b6',
+                        '#fbbd23'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+
+            return new Chart(ctx, { type, data: chartData, plugins: [ChartDataLabels], options });
+        };
+        
+        const renderAllCharts = () => {
+            const chartTextColor = '#a3a3a3'; // neutral-400
+            const chartGridColor = 'rgba(64, 64, 64, 0.3)'; // neutral-700
+
+            const defaultOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                        color: '#171717', // neutral-900
+                        anchor: 'end',
+                        align: 'end',
+                        formatter: (value) => value + '%',
+                        font: { weight: 'bold', size: 14 }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: chartGridColor }, ticks: { color: chartTextColor, font: { weight: 'bold' } } },
+                    x: { grid: { display: false }, ticks: { color: chartTextColor, font: { weight: 'bold' } } }
+                }
+            };
+            
+            const pieOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: {color: chartTextColor, font: { weight: 'bold' } }, display: true, position: 'bottom' }, datalabels: { color: '#171717', font: { weight: 'bold', size: 16 }, formatter: (value) => value > 5 ? value + '%' : '' } }};
+            const barHorizontalOptions = { ...defaultOptions, indexAxis: 'y', scales: { y: { beginAtZero: true, grid: { display: false }, ticks: { color: chartTextColor, font: { weight: 'bold' } } }, x: { grid: { color: chartGridColor }, ticks: { color: chartTextColor, font: { weight: 'bold' }, callback: value => value + '%' } } }};
+            const barDatalabelTop = { ...defaultOptions, plugins: {...defaultOptions.plugins, datalabels: {...defaultOptions.plugins.datalabels, color: '#e5e5e5', align: 'top', anchor: 'end'} } }
+
+            const chartsToRender = {
+                intention: {type: 'pie', options: pieOptions },
+                price: {type: 'bar', options: barDatalabelTop},
+                fandomDuration: {type: 'doughnut', options: pieOptions},
+                benefits: {type: 'bar', options: barHorizontalOptions},
+                age: {type: 'bar', options: barDatalabelTop},
+                region: {type: 'bar', options: barDatalabelTop },
+            };
+
+            for (const [key, val] of Object.entries(chartsToRender)) {
+                const ctx = document.getElementById(`${key}Chart`)?.getContext('2d');
+                if (ctx) {
+                    chartInstances[key] = createChart(ctx, val.type, key, val.options);
+                }
+            }
+        };
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        const populateFanWall = () => {
+            const scrollers = [
+                { id: '#scroller1 .scroller__inner', comments: [] },
+                { id: '#scroller2 .scroller__inner', comments: [] },
+                { id: '#scroller3 .scroller__inner', comments: [] }
+            ];
+
+            const shuffledComments = shuffleArray([...fanComments]);
+            
+            shuffledComments.forEach((comment, index) => {
+                scrollers[index % 3].comments.push(comment);
+            });
+
+            scrollers.forEach(scrollerInfo => {
+                const scrollerEl = document.querySelector(scrollerInfo.id);
+                if(!scrollerEl) return;
+                
+                scrollerInfo.comments.forEach(comment => {
+                    const li = document.createElement('li');
+                    li.className = 'flex-shrink-0';
+                    li.innerHTML = `
+                        <div class="bg-black/20 p-6 rounded-lg border border-neutral-800 h-full flex flex-col justify-center w-80 md:w-96">
+                            <h4 class="font-bold text-lg text-violet-400 mb-2">
+                                <span data-lang-tw>${comment.tw}</span>
+                                <span data-lang-ko class="hidden">${comment.ko}</span>
+                            </h4>
+                            <blockquote class="border-l-4 border-violet-700 pl-4">
+                                <p class="text-neutral-300 italic">
+                                    <span data-lang-tw>${comment.tw_quote}</span>
+                                    <span data-lang-ko class="hidden">${comment.ko_quote}</span>
+                                </p>
+                            </blockquote>
+                        </div>
+                    `;
+                    scrollerEl.appendChild(li);
+                });
+            });
+             updateLanguageVisibility(); // Ensure correct language is shown on initial load
+        };
+        
+        const updateLanguageVisibility = () => {
+            const oldLang = currentLang === 'tw' ? 'ko' : 'tw';
+            const newLang = currentLang;
+            document.querySelectorAll(`[data-lang-${oldLang}]`).forEach(el => { el.classList.add('hidden'); });
+            document.querySelectorAll(`[data-lang-${newLang}]`).forEach(el => { el.classList.remove('hidden'); });
+        }
+
+
+        const switchLanguage = () => {
+            currentLang = currentLang === 'tw' ? 'ko' : 'tw';
+            
+            updateLanguageVisibility();
+            
+            document.documentElement.lang = currentLang === 'tw' ? 'zh-Hant' : 'ko';
+            document.getElementById('lang-switch-btn').textContent = currentLang === 'tw' ? '한국어' : '繁體中文';
+            document.title = translations.pageTitle[currentLang];
+            
+            renderAllCharts();
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+             // Intersection Observer for animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { 
+                root: null,
+                threshold: 0.15 
+            });
+
+            const animatedItems = document.querySelectorAll('.animated-item');
+            animatedItems.forEach(item => {
+                observer.observe(item);
+            });
+            
+             // Fan Wall Scroller
+            populateFanWall();
+            const scrollers = document.querySelectorAll(".scroller");
+            if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+              addAnimation();
+            }
+
+            function addAnimation() {
+              scrollers.forEach((scroller) => {
+                scroller.setAttribute("data-animated", true);
+                const scrollerInner = scroller.querySelector(".scroller__inner");
+                const scrollerContent = Array.from(scrollerInner.children);
+                scrollerContent.forEach((item) => {
+                  const duplicatedItem = item.cloneNode(true);
+                  duplicatedItem.setAttribute("aria-hidden", true);
+                  scrollerInner.appendChild(duplicatedItem);
+                });
+              });
+            }
+
+
+            Chart.register(ChartDataLabels);
+            renderAllCharts();
+            document.getElementById('lang-switch-btn').addEventListener('click', switchLanguage);
+            document.getElementById('print-btn').addEventListener('click', () => { window.print(); });
+        });
+    </script>
+</body>
+</html>
+
